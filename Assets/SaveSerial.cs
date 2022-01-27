@@ -7,9 +7,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-//каждый класс в каждый файл +
-//вынести местоположение файла в класс +
-//SaveGame и LoadGame публично +-
+
 public class SaveSerial : MonoBehaviour
 {
     [SerializeField] private Encryption ssilkaNaEncryption;
@@ -31,49 +29,48 @@ public class SaveSerial : MonoBehaviour
     [System.Serializable]
     public class SaveData
     {
-        string savedString;
-        int savedInt;
-        float savedFloat;
-        bool savedBool;
-    }//
-
+        public string savedString;
+        public int savedInt;
+        public float savedFloat;
+        public bool savedBool;
+    }
 
     SaveData datasave = new SaveData();
 
-    string save = "/SaveData.dat";
+    public string save = "/SaveData.dat";
 
-
-    string stringToSave;
-    int intToSave;
-    float floatToSave;
-    bool boolToSave;
+    //public string stringToSave;
+    //public int intToSave;
+    //public float floatToSave;
+    //public bool boolToSave;
 
     //GUI 
-    public void OnGUI() 
-    {
-        if (GUI.Button(new Rect(0, 0, 125, 50), "int "))
-            intToSave++;
-        if (GUI.Button(new Rect(0, 100, 125, 50), "float "))
-            floatToSave += 0.1f;
-        if (GUI.Button(new Rect(0, 200, 125, 50), "bool "))
-            boolToSave = boolToSave ? boolToSave = false : boolToSave = true;
+    //public void OnGUI() 
+    //{
+    //    if (GUI.Button(new Rect(0, 0, 125, 50), "int "))
+    //        intToSave++;
+    //    if (GUI.Button(new Rect(0, 100, 125, 50), "float "))
+    //        floatToSave += 0.1f;
+    //    if (GUI.Button(new Rect(0, 200, 125, 50), "bool "))
+    //        boolToSave = boolToSave ? boolToSave = false : boolToSave = true;
 
-        stringToSave = GUI.TextField(new Rect(0, 300, 125, 25), stringToSave);
+    //    stringToSave = GUI.TextField(new Rect(0, 300, 125, 25), stringToSave);
 
-        GUI.Label(new Rect(375, 0, 125, 50), "int value " + intToSave);
-        GUI.Label(new Rect(375, 100, 125, 50), "float value " + floatToSave.ToString("F1"));
-        GUI.Label(new Rect(375, 200, 125, 50), "bool value " + boolToSave);
-        GUI.Label(new Rect(375, 300, 125, 50), "sample text " + stringToSave);
+    //    GUI.Label(new Rect(375, 0, 125, 50), "int value " + intToSave);
+    //    GUI.Label(new Rect(375, 100, 125, 50), "float value " + floatToSave.ToString("F1"));
+    //    GUI.Label(new Rect(375, 200, 125, 50), "bool value " + boolToSave);
+    //    GUI.Label(new Rect(375, 300, 125, 50), "sample text " + stringToSave);
 
-        if (GUI.Button(new Rect(550, 0, 125, 50), "save"))
-            SaveGame(datasave);
-        if (GUI.Button(new Rect(550, 100, 125, 50), "load"))
-            LoadGame(/*datasave*/);
-        if (GUI.Button(new Rect(550, 200, 125, 50), "reset"))
-            ResetData();
-    }
+    //    if (GUI.Button(new Rect(550, 0, 125, 50), "save"))
+    //        SaveGame(datasave);
+    //    if (GUI.Button(new Rect(550, 100, 125, 50), "load"))
+    //        LoadGame(datasave);
+    //    if (GUI.Button(new Rect(550, 200, 125, 50), "reset"))
+    //        ResetData();
+    //}
 
     //Save&Load
+
     public void SaveGame(object datasave)
     {
         BinaryFormatter bf = new BinaryFormatter();
@@ -81,68 +78,35 @@ public class SaveSerial : MonoBehaviour
         bf.Serialize(file, datasave);
         file.Close();
         Debug.Log("Game data saved!");
-        Debug.Log(datasave);
     }
 
-    public void LoadGame(/*object datasave*/)
+    public T LoadGame<T>()
     {
-        if (File.Exists(Application.persistentDataPath + save))
+        if (!File.Exists(Application.persistentDataPath + save))
         {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + save, FileMode.Open);
-            bf.Deserialize(file);
-            file.Close();
-            Debug.Log("Game data loaded!");
-        }
-        else
             Debug.LogError("There is no save data!");
+            return default(T);
+        }
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(Application.persistentDataPath + save, FileMode.Open);
+        T result = (T)bf.Deserialize(file);
+        file.Close();
+        Debug.Log("Game data loaded!");
+        return result;
     }
 
-    //public void SaveGame()
+    //public void ResetData()
     //{
-    //    BinaryFormatter bf = new BinaryFormatter();
-    //    FileStream file = File.Create(Application.persistentDataPath + "/SaveData.dat");
-    //    SaveData data = new SaveData();
-    //    data.savedInt = intToSave;
-    //    data.savedFloat = floatToSave;
-    //    data.savedBool = boolToSave;
-    //    data.savedString = stringToSave;
-    //    bf.Serialize(file, data);
-    //    file.Close();
-    //    Debug.Log("Game data saved!");
-    //}
-
-    //public void LoadGame()
-    //{
-    //    if (File.Exists(Application.persistentDataPath + "/SaveData.dat"))
+    //    if (File.Exists(Application.persistentDataPath + save))
     //    {
-    //        BinaryFormatter bf = new BinaryFormatter();
-    //        FileStream file = File.Open(Application.persistentDataPath + "/SaveData.dat", FileMode.Open);
-    //        SaveData data = (SaveData)bf.Deserialize(file);
-    //        intToSave = data.savedInt;
-    //        floatToSave = data.savedFloat;
-    //        boolToSave = data.savedBool;
-    //        stringToSave = data.savedString;
-    //        file.Close();
-    //        Debug.Log("Game data loaded!");
-
+    //        File.Delete(Application.persistentDataPath + save);
+    //        intToSave = 0;
+    //        floatToSave = 0.0f;
+    //        boolToSave = false;
+    //        stringToSave = " ";
+    //        Debug.Log("Data reset complete!");
     //    }
     //    else
-    //        Debug.LogError("There is no save data!");
+    //        Debug.LogError("No save data to delete.");
     //}
-
-    public void ResetData()
-    {
-        if (File.Exists(Application.persistentDataPath + save))
-        {
-            File.Delete(Application.persistentDataPath + save);
-            intToSave = 0;
-            floatToSave = 0.0f;
-            boolToSave = false;
-            stringToSave = " ";
-            Debug.Log("Data reset complete!");
-        }
-        else
-            Debug.LogError("No save data to delete.");
-    }
-}//25
+}
