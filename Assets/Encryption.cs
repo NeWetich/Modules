@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,7 +10,7 @@ public class Encryption : MonoBehaviour
     {
         public static int KeyLength = 128;
         private const string SaltKey = "ShMG8hLyZ7k~Ge5@";
-        private const string VIKey = "~6YUi0Sv5@|{aOZO"; // TODO: Generate random VI each encryption and store it with encrypted value
+        private const string VIKey = "~6YUi0Sv5@|{aOZO";
 
         public static string Encrypt(byte[] value, string password)
         {
