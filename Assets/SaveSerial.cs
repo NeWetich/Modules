@@ -11,14 +11,13 @@ using UnityEngine.UI;
 public class SaveSerial : MonoBehaviour
 {
 
+    public SaveData field;
 
     void Start()
     {
         Encryption.AES.Encrypt(new byte[10], "pass");
-        //GameObject.Find("SaveData").GetComponent<SaveData>();
+        field = GetComponent<SaveData>();
     }
-
-    SaveData datasave = new SaveData();
 
     public string save = "/SaveData.dat";
 

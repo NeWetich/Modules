@@ -10,32 +10,31 @@ using UnityEngine.UI;
 public class TestSave : MonoBehaviour
 {
 
+    [System.Serializable]
+    public class SaveData
+    {
+        bool fullScreeen;
+    }
+
     void Start()
     {
         Encryption.AES.Encrypt(new byte[10], "pass");
-        //GameObject.Find("SaveData").GetComponent<SaveData>();
     }
 
     SaveData datasave = new SaveData();
 
     public string save = "/SaveData.dat";
 
-    public Button saved;
-    public Button loaded;
+    public Toggle fullScreenClick;
 
     public void ClickSave(bool datasave)
     {
+        //datasave.fullScreeen = fullScreenClick;???
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Application.persistentDataPath + save);
         bf.Serialize(file, datasave);
         file.Close();
         Debug.Log("Game data saved!");
-
-    }
-
-    public void ClickLoad()
-    {
-
     }
 
     public bool ForClickLoad()
@@ -51,6 +50,11 @@ public class TestSave : MonoBehaviour
         file.Close();
         Debug.Log("Game data loaded!");
         return result;
+    }
+
+    public void ClickLoad()
+    {
+        ForClickLoad();
     }
 
 }
