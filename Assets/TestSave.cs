@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Text;
 using UnityEngine.UI;
+
 
 public class TestSave : MonoBehaviour
 {
@@ -13,7 +15,7 @@ public class TestSave : MonoBehaviour
     [System.Serializable]
     public class SaveData
     {
-        bool fullScreeen;
+        public bool fullScreen = false;
     }
 
     void Start()
@@ -27,34 +29,19 @@ public class TestSave : MonoBehaviour
 
     public Toggle fullScreenClick;
 
-    public void ClickSave(bool datasave)
+    public void SaveSettings()
     {
-        //datasave.fullScreeen = fullScreenClick;???
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath + save);
-        bf.Serialize(file, datasave);
-        file.Close();
-        Debug.Log("Game data saved!");
+        Screen.fullScreen = datasave.fullScreen;
     }
 
-    public bool ForClickLoad()
+        public void ClickSave()
     {
-        if (!File.Exists(Application.persistentDataPath + save))
-        {
-            Debug.LogError("There is no save data!");
-            return default(bool);
-        }
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Open(Application.persistentDataPath + save, FileMode.Open);
-        bool result = (bool)bf.Deserialize(file);
-        file.Close();
-        Debug.Log("Game data loaded!");
-        return result;
+        SaveSerial.SaveGame(datasave);
     }
-
+ 
     public void ClickLoad()
     {
-        ForClickLoad();
+        SaveSerial.LoadGame<SaveData>();
     }
 
 }

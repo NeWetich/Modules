@@ -11,17 +11,14 @@ using UnityEngine.UI;
 public class SaveSerial : MonoBehaviour
 {
 
-    public SaveData field;
-
     void Start()
     {
         Encryption.AES.Encrypt(new byte[10], "pass");
-        field = GetComponent<SaveData>();
     }
 
-    public string save = "/SaveData.dat";
+    public static string save = "/SaveData.dat";
 
-    public void SaveGame(object datasave)
+    public static void SaveGame(object datasave)
     {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Application.persistentDataPath + save);
@@ -30,8 +27,7 @@ public class SaveSerial : MonoBehaviour
         Debug.Log("Game data saved!");
 
     }
-
-    public T LoadGame<T>()
+    public static T LoadGame<T>()
     {
         if (!File.Exists(Application.persistentDataPath + save))
         {
