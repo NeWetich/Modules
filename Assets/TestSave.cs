@@ -12,36 +12,28 @@ using UnityEngine.UI;
 public class TestSave : MonoBehaviour
 {
 
-    [System.Serializable]
-    public class SaveData
-    {
-        public bool fullScreen = false;
-    }
-
-    void Start()
-    {
-        Encryption.AES.Encrypt(new byte[10], "pass");
-    }
-
     SaveData datasave = new SaveData();
 
-    public string save = "/SaveData.dat";
+    public GameObject fullScreenClick;
+    public GameObject volumeClick;
 
-    public Toggle fullScreenClick;
-
-    public void SaveSettings()
+    public void ChangeVolume(float val)
     {
-        Screen.fullScreen = datasave.fullScreen;
+        datasave.volume = val;
     }
 
-        public void ClickSave()
+    public void ChangeFullscreenMode(bool val)
+    {
+        datasave.fullScreen = val;
+    }
+
+    public void ClickSave()
     {
         SaveSerial.SaveGame(datasave);
     }
- 
+
     public void ClickLoad()
     {
         SaveSerial.LoadGame<SaveData>();
     }
-
 }

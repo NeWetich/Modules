@@ -17,15 +17,13 @@ public class SaveSerial : MonoBehaviour
     }
 
     public static string save = "/SaveData.dat";
-
+    public static BinaryFormatter bf = new BinaryFormatter();
     public static void SaveGame(object datasave)
     {
-        BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Create(Application.persistentDataPath + save);
         bf.Serialize(file, datasave);
         file.Close();
         Debug.Log("Game data saved!");
-
     }
     public static T LoadGame<T>()
     {
@@ -34,7 +32,6 @@ public class SaveSerial : MonoBehaviour
             Debug.LogError("There is no save data!");
             return default(T);
         }
-        BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(Application.persistentDataPath + save, FileMode.Open);
         T result = (T)bf.Deserialize(file);
         file.Close();
